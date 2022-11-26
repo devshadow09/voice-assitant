@@ -5,23 +5,23 @@ import datetime
 import wikipedia
 import pyjokes
 import wolframalpha as wolf
-from googlesearch import search
+
 listener = sr.Recognizer()
 engine = pyttsx3.init()
-wolf_id = "WXA8A7-H38W4TG8PJ"
+wolf_id = "YOUR WOLFRAM ID" #app id from wolfram alpha
 client = wolf.Client(wolf_id)
 
 
 
-name = input("Enter your name: ")
+name = input("Enter your name: ") #your name of course
 
-def talk(text):
+def talk(text): #text to speech engine
     engine.say(text)
     engine.runAndWait()
 
 
 def take_command():
-    try:
+    try: #microphone
         with sr.Microphone() as source:
             print('listening...')
             voice = listener.listen(source)
@@ -30,7 +30,7 @@ def take_command():
             if 'robot' in command:
                 command = command.replace('robot', '')
                 print(command)
-    except:
+    except: #mic error
         print("error")
         pass
     return command
@@ -39,35 +39,33 @@ def take_command():
 def run_robot():
     command = take_command()
     print(command)
-    if 'play' in command:
+    if 'play' in command: #play a song
         song = command.replace('play', '')
         talk('playing ' + song)
         pywhatkit.playonyt(song)
 
-    elif "search google" in command:
-        question = command.replace("search google", "")
-        search(question)
-    elif "search" in command:
+
+    elif "search" in command: #requires wolfram app id to work
         replace = command.replace("search", "")
         res = client.query(replace)
         answer = next(res.results).text
         print(answer)
         talk(answer)
-    elif 'time' in command:
+    elif 'time' in command: #tell the time
         time = datetime.datetime.now().strftime('%I:%M %p')
         talk('Current time is ' + time)
-    elif 'give info on' in command:
+    elif 'give info on' in command: #scour wikipedia
         person = command.replace('give info on', '')
         info = wikipedia.summary(person, 1)
         print(info)
         talk(info)
-    elif 'hi' in command:
+    elif 'hi' in command: #say hi with name given at start of program
         talk("Hello " + name)
-    elif "my name" in command:
+    elif "my name" in command: #says your name
         talk("I believe your name is " + name)
-    elif 'joke' in command:
+    elif 'joke' in command: #says a joke
         talk(pyjokes.get_joke())
-    else:
+    else: #inaudible/disturbance/unavailable command
         talk('Please say the command again.')
 
 
